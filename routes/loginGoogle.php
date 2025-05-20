@@ -15,7 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once '../database/db.php';
+require_once __DIR__ . '/../database/db.php';
+
 require_once '../config/firebase.php';
 require_once '../controllers/AuthController.php';
 
