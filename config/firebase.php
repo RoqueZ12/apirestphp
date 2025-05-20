@@ -25,7 +25,9 @@ file_put_contents($tempPath, $firebaseJson);
 
 $auth = (new Factory())
     ->withServiceAccount($tempPath)
+    ->withProjectId('mini-e-commerce-d68bd') // 👈 Agrega esto
     ->createAuth();
+
 
 // Función para verificar el token (opcional, si la necesitas)
 function verifyIdToken($idTokenString)
