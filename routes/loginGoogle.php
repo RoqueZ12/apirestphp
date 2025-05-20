@@ -2,13 +2,11 @@
 
 // Lista de orígenes permitidos
 $allowed_origins = [
-    "https://miniecommerce-dun.vercel.app/"
+    "https://miniecommerce-dun.vercel.app" // sin barra final
 ];
 
-// Normaliza el origen recibido quitando la barra final si existe
 $origin = rtrim($_SERVER['HTTP_ORIGIN'] ?? '', '/');
 
-// Compara contra los orígenes permitidos
 if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
     header("Vary: Origin");
@@ -17,16 +15,15 @@ if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Credentials: true");
 }
 
-// Manejo de preflight (pre-solicitudes OPTIONS)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
+
 // Requiere archivos necesarios
 require_once __DIR__ . '/../database/db.php';
 require_once __DIR__ . '/../config/firebase.php';
 $config = require_once __DIR__ . '/../config/credenciales.php';
-
 require_once __DIR__ . '/../controllers/AuthController.php';
 
 // Obtener el ID token del cuerpo de la petición
@@ -37,8 +34,12 @@ $idToken = $data['idToken'] ?? null;
 $authController = new AuthController($pdo, $auth, $config['jwt_secret']);
 $result = $authController->loginWithGoogle($idToken);
 
-// Si autenticación exitosa, inicia sesión
-if (isset($result['success']) && $result['success'] && isset($result['token'])) {
+// Validación del token y sesión
+if (
+    isset($result['success']) && $result['success'] &&
+    isset($result['token']) &&
+    count(explode('.', $result['token'])) === 3
+) {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -46,6 +47,6 @@ if (isset($result['success']) && $result['success'] && isset($result['token'])) 
     $_SESSION['user_id'] = $payload['uid'];
 }
 
-// Responder con el resultado
+// Responder con JSON
 header('Content-Type: application/json');
 echo json_encode($result);
