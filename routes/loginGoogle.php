@@ -6,6 +6,7 @@ require_once '../controllers/AuthController.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     header("Access-Control-Allow-Origin: http://localhost:5173");
+    header("Access-Control-Allow-Origin: https://miniecommerce-dun.vercel.app/");
     header("Access-Control-Allow-Credentials: true");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
     header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
@@ -13,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Origin: https://miniecommerce-dun.vercel.app/");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
@@ -27,10 +29,10 @@ $authController = new AuthController($pdo, $auth);
 $result = $authController->loginWithGoogle($idToken);
 
 if (isset($result['success']) && $result['success'] && isset($result['token'])) {
-    session_start(); // ✅ Primero, iniciar la sesión
+    session_start(); // iniciamos session
 
     $payload = json_decode(base64_decode(explode('.', $result['token'])[1]), true);
-    $_SESSION['user_id'] = $payload['uid']; // ✅ Ahora puedes usar $_SESSION con seguridad
+    $_SESSION['user_id'] = $payload['uid'];
 }
 
 

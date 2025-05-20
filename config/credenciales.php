@@ -9,4 +9,5 @@ return [
     ],
     'firebase_credentials_json' => getenv('FIREBASE_CREDENTIALS_JSON'),
     'jwt_secret' => getenv('JWT_SECRET'),
+    'urlrender' => getenv('URL_RENDER')
 ];
