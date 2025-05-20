@@ -22,10 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-
 // Requiere archivos necesarios
 require_once __DIR__ . '/../database/db.php';
 require_once __DIR__ . '/../config/firebase.php';
+$config = require_once __DIR__ . '/../config/credenciales.php';
+
 require_once __DIR__ . '/../controllers/AuthController.php';
 
 // Obtener el ID token del cuerpo de la petición
@@ -33,16 +34,18 @@ $data = json_decode(file_get_contents("php://input"), true);
 $idToken = $data['idToken'] ?? null;
 
 // Ejecutar autenticación
-$authController = new AuthController($pdo, $auth);
+$authController = new AuthController($pdo, $auth, $config['jwt_secret']);
 $result = $authController->loginWithGoogle($idToken);
 
 // Si autenticación exitosa, inicia sesión
 if (isset($result['success']) && $result['success'] && isset($result['token'])) {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     $payload = json_decode(base64_decode(explode('.', $result['token'])[1]), true);
     $_SESSION['user_id'] = $payload['uid'];
 }
 
-// Responder con el resultado en JSON
+// Responder con el resultado
 header('Content-Type: application/json');
 echo json_encode($result);

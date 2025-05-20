@@ -13,12 +13,12 @@ class AuthController
     private $authFirebase;
     private $jwtSecret;
 
-    public function __construct($pdo, $firebaseAuth, $jwtSecret = null)
+    public function __construct($pdo, $firebaseAuth, $jwtSecret)
     {
         $this->db = $pdo;
         $this->userModel = new UserModel($pdo);
         $this->authFirebase = $firebaseAuth;
-        $this->jwtSecret = $jwtSecret ?? $config['jwt_secret'];
+        $this->jwtSecret = $jwtSecret;
     }
 
 
