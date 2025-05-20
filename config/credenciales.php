@@ -8,6 +8,6 @@ return [
         'port' => getenv('DB_PORT'),
     ],
     'firebase_credentials_json' => getenv('FIREBASE_CREDENTIALS_JSON'),
-    'jwt_secret' => getenv('JWT_SECRET'),
+    'jwt_secret' => getenv('JWT_SECRET') ?: '', // fallback vacío si no existe
     'urlrender' => getenv('URL_RENDER')
 ];

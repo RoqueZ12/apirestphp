@@ -15,6 +15,10 @@ class AuthController
 
     public function __construct($pdo, $firebaseAuth, $jwtSecret)
     {
+        if (!is_string($jwtSecret) || trim($jwtSecret) === '') {
+            throw new InvalidArgumentException("JWT secret inválido: debe ser un string no vacío.");
+        }
+
         $this->db = $pdo;
         $this->userModel = new UserModel($pdo);
         $this->authFirebase = $firebaseAuth;
