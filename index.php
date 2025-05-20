@@ -6,7 +6,7 @@ $allowedOrigins = [
     "https://miniecommerce-dun.vercel.app"
 ];
 
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$origin = rtrim($_SERVER['HTTP_ORIGIN'] ?? '', '/'); // elimina barra final si existe
 
 if (in_array($origin, $allowedOrigins)) {
     header("Access-Control-Allow-Origin: $origin");
