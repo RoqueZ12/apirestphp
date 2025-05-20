@@ -3,7 +3,7 @@
 
 
 $allowedOrigins = [
-    "https://miniecommerce-dun.vercel.app"
+    "https://miniecommerce-dun.vercel.app/"
 ];
 
 $origin = rtrim($_SERVER['HTTP_ORIGIN'] ?? '', '/'); // elimina barra final si existe

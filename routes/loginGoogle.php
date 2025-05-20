@@ -2,7 +2,7 @@
 
 // Lista de orígenes permitidos
 $allowed_origins = [
-    "https://miniecommerce-dun.vercel.app"
+    "https://miniecommerce-dun.vercel.app/"
 ];
 
 // Normaliza el origen recibido quitando la barra final si existe
