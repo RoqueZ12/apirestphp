@@ -1,4 +1,8 @@
 <?php
+// 🔒 Evita mostrar errores en HTML
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(E_ALL);
 
 // Lista de orígenes permitidos
 $allowed_origins = [
