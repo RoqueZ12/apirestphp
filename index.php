@@ -1,6 +1,5 @@
 <?php
 
-// Habilitar CORS
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -15,8 +14,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . '/database/db.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = str_replace(dirname($_SERVER['SCRIPT_NAME']), '', $uri);
+// Quitar solo la parte antes de 'productos' si tu app está en un subdirectorio.
+// Por ejemplo, si está en raíz no necesitas str_replace.
 $params = explode('/', trim($uri, '/'));
+
+error_log("URI: " . $_SERVER['REQUEST_URI']);
+error_log("Parsed URI: " . $uri);
+error_log("Params: " . print_r($params, true));
 
 if (isset($params[0]) && $params[0] === 'productos') {
     require_once __DIR__ . '/routes/product.php';

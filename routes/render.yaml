@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: apirestphp
+    env: php
+    plan: free
+    buildCommand: ""
+    startCommand: ""
+    routes:
+      - type: rewrite
+        source: "/(.*)"
+        destination: "/index.php"
