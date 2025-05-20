@@ -34,10 +34,11 @@ $idToken = $data['idToken'] ?? null;
 $authController = new AuthController($pdo, $auth, $config['jwt_secret']);
 $result = $authController->loginWithGoogle($idToken);
 
-// Validación del token y sesión
+// ⚠️ Verifica si el token fue generado exitosamente y está bien formado
 if (
-    isset($result['success']) && $result['success'] &&
-    isset($result['token']) &&
+    is_array($result) &&
+    isset($result['success'], $result['token']) &&
+    $result['success'] === true &&
     count(explode('.', $result['token'])) === 3
 ) {
     if (session_status() === PHP_SESSION_NONE) {

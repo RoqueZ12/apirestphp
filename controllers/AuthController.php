@@ -58,6 +58,7 @@ class AuthController
                     'password_hash' => null,
                     'provider' => 'google'
                 ]);
+                $user = $this->userModel->findByUID($uid); // 🔥 Esta línea es crucial
             }
             $jwt = $this->generateJWT($uid);
             // return ['success' => true, 'uid' => $uid];
