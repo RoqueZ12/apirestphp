@@ -2,7 +2,7 @@
 
 // Lista de orígenes permitidos
 $allowed_origins = [
-    "https://miniecommerce-dun.vercel.app" // sin barra final
+    "https://miniecommerce-dun.vercel.app"
 ];
 
 $origin = rtrim($_SERVER['HTTP_ORIGIN'] ?? '', '/');
@@ -22,22 +22,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-
 // Requiere archivos necesarios
 require_once __DIR__ . '/../database/db.php';
 require_once __DIR__ . '/../config/firebase.php';
 $config = require_once __DIR__ . '/../config/credenciales.php';
 require_once __DIR__ . '/../controllers/AuthController.php';
 
-// Obtener el ID token del cuerpo de la petición
-$data = json_decode(file_get_contents("php://input"), true);
-$idToken = $data['idToken'] ?? null;
+// Obtener y validar el JSON del cuerpo
+$input = file_get_contents("php://input");
+$data = json_decode($input, true);
+
+if (!is_array($data) || empty($data['idToken'])) {
+    http_response_code(400);
+    header('Content-Type: application/json');
+    echo json_encode(["error" => "Solicitud inválida o token no enviado"]);
+    exit;
+}
+
+$idToken = $data['idToken'];
 
 // Ejecutar autenticación
 $authController = new AuthController($pdo, $auth, $config['jwt_secret']);
 $result = $authController->loginWithGoogle($idToken);
 
-// ⚠️ Verifica si el token fue generado exitosamente y está bien formado
+// Validar token JWT generado
 if (
     is_array($result) &&
     isset($result['success'], $result['token']) &&
@@ -48,7 +56,7 @@ if (
         session_start();
     }
     $payload = json_decode(base64_decode(explode('.', $result['token'])[1]), true);
-    $_SESSION['user_id'] = $payload['uid'];
+    $_SESSION['user_id'] = $payload['uid'] ?? null;
 }
 
 // Responder con JSON
