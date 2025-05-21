@@ -18,6 +18,9 @@ class AuthController
         if (!is_string($jwtSecret) || trim($jwtSecret) === '') {
             throw new InvalidArgumentException("JWT secret inválido: debe ser un string no vacío.");
         }
+        if (!$this->userModel->create(...)) {
+            return ['error' => 'Error al crear usuario'];
+        }
 
         $this->db = $pdo;
         $this->userModel = new UserModel($pdo);

@@ -24,14 +24,19 @@ class UserModel
 
     public function create($user)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO users (uid, name, email, password_hash, provider)
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO users (uid, name, email, password_hash, provider)
             VALUES (?, ?, ?, ?, ?)");
-        return $stmt->execute([
-            $user['uid'],
-            $user['name'],
-            $user['email'],
-            $user['password_hash'],
-            $user['provider']
-        ]);
+            return $stmt->execute([
+                $user['uid'],
+                $user['name'],
+                $user['email'],
+                $user['password_hash'],
+                $user['provider']
+            ]);
+        } catch (\PDOException $e) {
+            error_log("Error al crear usuario: " . $e->getMessage());
+            return false;
+        }
     }
 }

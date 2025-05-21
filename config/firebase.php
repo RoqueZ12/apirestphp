@@ -22,6 +22,12 @@ use Kreait\Firebase\Factory;
 $firebaseJson = getenv('FIREBASE_CREDENTIALS_JSON');
 $tempPath = '/tmp/firebase_credentials.json';
 file_put_contents($tempPath, $firebaseJson);
+if (!file_exists($tempPath) || filesize($tempPath) < 100) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Firebase credentials inválidas o vacías']);
+    exit;
+}
+
 
 $auth = (new Factory())
     ->withServiceAccount($tempPath)
