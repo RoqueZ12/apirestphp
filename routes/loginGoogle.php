@@ -36,14 +36,23 @@ require_once __DIR__ . '/../controllers/AuthController.php';
 $input = file_get_contents("php://input");
 $data = json_decode($input, true);
 
+$input = file_get_contents("php://input");
+$data = json_decode($input, true);
+
+// Si no se encontró idToken en el body, intenta leerlo del header Authorization
 if (!is_array($data) || empty($data['idToken'])) {
-    http_response_code(400);
-    header('Content-Type: application/json');
-    echo json_encode(["error" => "Solicitud inválida o token no enviado"]);
-    exit;
+    $headers = getallheaders();
+    if (!empty($headers['Authorization']) && str_starts_with($headers['Authorization'], 'Bearer ')) {
+        $idToken = trim(str_replace('Bearer', '', $headers['Authorization']));
+    } else {
+        http_response_code(400);
+        echo json_encode(["error" => "Solicitud inválida o token no enviado"]);
+        exit;
+    }
+} else {
+    $idToken = $data['idToken'];
 }
 
-$idToken = $data['idToken'];
 
 // Ejecutar autenticación
 $authController = new AuthController($pdo, $auth, $config['jwt_secret']);
