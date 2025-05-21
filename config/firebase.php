@@ -28,6 +28,7 @@ if (!file_exists($tempPath) || filesize($tempPath) < 100) {
     exit;
 }
 
+error_log("Firebase JSON length: " . strlen($firebaseJson));
 
 $auth = (new Factory())
     ->withServiceAccount($tempPath)

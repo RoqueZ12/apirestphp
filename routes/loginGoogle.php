@@ -36,8 +36,6 @@ require_once __DIR__ . '/../controllers/AuthController.php';
 $input = file_get_contents("php://input");
 $data = json_decode($input, true);
 
-$input = file_get_contents("php://input");
-$data = json_decode($input, true);
 
 // Si no se encontró idToken en el body, intenta leerlo del header Authorization
 if (!is_array($data) || empty($data['idToken'])) {
@@ -74,4 +72,12 @@ if (
 
 // Responder con JSON
 header('Content-Type: application/json');
+if (!is_array($result)) {
+    error_log("Resultado no es array: " . var_export($result, true));
+} elseif (isset($result['error'])) {
+    error_log("Error en loginWithGoogle: " . $result['error']);
+} else {
+    error_log("Login con Google exitoso. Token generado correctamente.");
+}
+
 echo json_encode($result);
